@@ -36,7 +36,7 @@ defmodule Thrift.Generator.StructGenerator do
         def message(exception), do: inspect(exception)
       end
     end
-
+    bname = "#{name}.BinaryProtocol" |> String.to_atom()
     quote do
       defmodule unquote(name) do
         _ = unquote "Auto-generated Thrift #{label} #{struct.name}"
@@ -50,16 +50,16 @@ defmodule Thrift.Generator.StructGenerator do
         def new, do: %__MODULE__{}
         unquote_splicing(List.wrap(extra_defs))
         def serialize(struct) do
-          unquote(name).BinaryProtocol.serialize(struct)
+          unquote(bname).serialize(struct)
         end
         def serialize(struct, :binary) do
-          unquote(name).BinaryProtocol.serialize(struct)
+          unquote(bname).serialize(struct)
         end
         def deserialize(binary) do
-          unquote(name).BinaryProtocol.deserialize(binary)
+          unquote(bname).deserialize(binary)
         end
       end
-      defmodule unquote(name).BinaryProtocol do
+      defmodule unquote(bname) do
         @moduledoc false
         unquote_splicing(binary_protocol_defs)
       end
