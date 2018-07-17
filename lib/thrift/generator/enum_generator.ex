@@ -1,13 +1,17 @@
 defmodule Thrift.Generator.EnumGenerator do
 
+  # Move the enums value accessors from macros to functions.
+  # While the macro system is faster for an execution standpoint
+  # Our sandboxing system will reject macro calls so lets take it out
   def generate(name, enum) do
     macro_defs = Enum.map(enum.values, fn {key, value} ->
       macro_name = key
       |> to_name
-      |> Macro.pipe(quote do unquote end, 0)
+      #|> Macro.pipe(quote do unquote end, 0)
 
       quote do
-        defmacro unquote(macro_name)(), do: unquote(value)
+        #defmacro unquote(macro_name)(), do: unquote(value)
+        def unquote(macro_name)(), do: unquote(value)
       end
     end)
 
